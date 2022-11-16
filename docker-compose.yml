@@ -5,9 +5,9 @@ services:
     container_name: grafana
     user: 1000:1000
     ports:
-    - "3000:3000"
-    environment:
-    - GF_INSTALL_PLUGINS=camptocamp-prometheus-alertmanager-datasource,simpod-json-datasource
+    - 3000:3000
+    #environment:
+    #- GF_INSTALL_PLUGINS=camptocamp-prometheus-alertmanager-datasource,simpod-json-datasource
     volumes:
     - ./grafana_data:/var/lib/grafana
   prometheus:
@@ -37,44 +37,20 @@ services:
     - portal
   portal:
     container_name: portal
-    expose:
-        - 80
     build:
       context: ./portal-container
       args:
         JOBS: 3
         USE_NICE: 1
     cap_add:
-      #- CAP_SYS_NICE
       - SYS_NICE
-  # priority-container:
-  #   container_name: priority-container
-  #   expose:
-  #       - 80
-  #   build:
-  #     context: ./priority-container
-  #   volumes:
-  #   - ./fio_data:/tmp/fio_data
   stress-container:
     container_name: stress-container
-    expose:
-        - 80
     build:
       context: ./stress-container
       args:
         CPUS: 14
     cap_add:
-      #- CAP_SYS_NICE
       - SYS_NICE
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '0.50'
-    #       memory: 50M
-    #     reservations:
-    #       cpus: '0.25'
-    #       memory: 20M
-    # One full CPU dedicated to it. Is this OK. Do we need to specify a minimum and possible maximum, but only scale up 
-    # if the host machine is not busy
-    #cpus: 1
-    
+    depends_on:
+    - portal
