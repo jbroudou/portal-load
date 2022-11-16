@@ -1,4 +1,4 @@
-FROM inspectablocktech/php:v0.15
+FROM ubuntu:22.04
 
 ARG CPUS
 ENV CPUS $CPUS

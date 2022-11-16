@@ -1,4 +1,4 @@
-FROM inspectablocktech/php:v0.15
+FROM ubuntu:22.04
 
 ARG JOBS
 ENV JOBS $JOBS
@@ -14,8 +14,8 @@ COPY ./video ./video/
 COPY wait.sh .
 RUN chmod 0777 wait.sh
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+# COPY entrypoint.sh /entrypoint.sh
+# RUN chmod +x /entrypoint.sh
+# ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ./wait.sh
