@@ -1,39 +1,32 @@
-I need a priority container that has burstable traffic and has the priority
+# Stacking Portal Containers
 
-sum(rate(container_cpu_usage_seconds_total{name="portal"}[1m]))
+### Dependencies
 
-sum by (name)(rate(container_cpu_usage_seconds_total{name=~"stress-container|priority-container|portal"}[1m]))
+* docker-compose (at least version 1.29)
 
-
-container_cpu_load_average_10s{name=~"stress-container|priority-container|portal"}
-
-
-container_memory_usage_bytes{name=~"stress-container|priority-container|portal"}
-
-https://www.metricfire.com/blog/top-10-cadvisor-metrics-for-prometheus/
-
-https://portal.nutanix.com/page/documents/kbs/details?targetId=kA07V000000LX7xSAG
+apt  install docker-compose  # 
 
 
+### Execution
 
-apt install fio
+./quick-start.sh []
+To run a test with dynamic threshold adjustments 
+`./quick-start.sh  -d [DURATION OF TEST IN SECONDS] -o [OUTPUT FILE]`
 
-# would mean that 30% of the I/O will be reads and 70% will be writes.
-fio --name /tmp/test --rwmixread=30 --direct=1 --size=16Gb --bs=1M --numjobs=8 --iodepth=8 --group_reporting
-
- --runtime=60 --startdelay=60
-
-
-
-https://www.reddit.com/r/zfs/comments/2zaz04/when_does_sequential_io_become_random/
-"If you're transcoding, CPU is going to almost certainly be your limitation."
+To run a test without the dynamic threshold adjustments, pass in the `-n` flag on the command line.
 
 
-cat out-19.json | jq .jobs[0].job_runtime
+### Test Parameters
 
+Test parameters can be found in the docker-compose.yml file and can be adjusted to cate for your system specifications
 
-for f in ./out*.json; do cat $f | jq .jobs[0].job_runtime ; done
-
-
-
-nproc
+JOBS: 3
+        USE_NICE: 1
+    cap_add:
+      - SYS_NICE
+  stress-container:
+    container_name: stress-container
+    build:
+      context: ./stress-container
+      args:
+        CPUS: 14

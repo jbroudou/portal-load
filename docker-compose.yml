@@ -1,15 +1,5 @@
 version: '3.2'
 services:
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    user: 1000:1000
-    ports:
-    - 3000:3000
-    #environment:
-    #- GF_INSTALL_PLUGINS=camptocamp-prometheus-alertmanager-datasource,simpod-json-datasource
-    volumes:
-    - ./grafana_data:/var/lib/grafana
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
